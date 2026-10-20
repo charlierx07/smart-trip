@@ -1,0 +1,82 @@
+# =============================================================
+#  Smart Trip — .gitignore
+# =============================================================
+
+# ── Dependencies ──────────────────────────────────────────────
+/node_modules
+/.pnp
+.pnp.js
+
+# ── Production build ──────────────────────────────────────────
+/build
+/dist
+
+# ── Environment / Secrets (NEVER commit these) ────────────────
+.env
+.env.local
+.env.development
+.env.development.local
+.env.test
+.env.test.local
+.env.production
+.env.production.local
+
+# ── Firebase ──────────────────────────────────────────────────
+firebase.json
+.firebaserc
+firebase-debug.log
+firestore.rules
+firestore.indexes.json
+/functions/node_modules
+/functions/.env
+
+# ── API Keys / Credentials ────────────────────────────────────
+*.key
+*.pem
+*.p12
+*.pfx
+secrets.json
+service-account*.json
+*-credentials.json
+google-services.json
+GoogleService-Info.plist
+
+# ── Logs ──────────────────────────────────────────────────────
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+*.log
+
+# ── Testing / Coverage ────────────────────────────────────────
+/coverage
+*.lcov
+.nyc_output
+
+# ── OS generated files ────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# ── Editor / IDE ──────────────────────────────────────────────
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.sublime-project
+*.sublime-workspace
+
+# ── Misc ──────────────────────────────────────────────────────
+.blackboxrules
+.cache
+.parcel-cache
+*.tgz
+*.zip

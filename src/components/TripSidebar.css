@@ -1,0 +1,79 @@
+.trip-sidebar {
+  position: fixed;
+  top: 180px; /* start after navbar + filterbar */
+  right: 0;
+  width: 300px;
+  height: auto; /* reduce height to avoid scroll overflow */
+  padding: 20px;
+  background: linear-gradient(to bottom right, #6a11cb, #2575fc);
+  color: white;
+  box-shadow: -3px 0 15px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  border-radius: 12px 12px 12px 12px;
+  overflow-y: auto; /* optional: scroll inside sidebar if content overflows */
+}
+
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.clear-btn {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.clear-btn:hover {
+  transform: scale(1.2);
+}
+
+.empty-text {
+  font-style: italic;
+  opacity: 0.8;
+}
+
+.selected-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px 0;
+  overflow-y: auto;
+  flex-grow: 1;
+}
+
+.selected-item {
+  background-color: rgba(255, 255, 255, 0.1);
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.next-btn {
+  background-color: white;
+  color: #2575fc;
+  font-weight: bold;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.next-btn:disabled {
+  background-color: rgba(255, 255, 255, 0.5);
+  color: #999;
+  cursor: not-allowed;
+}
+
+.next-btn:hover:not(:disabled) {
+  background-color: #e0e0e0;
+}
