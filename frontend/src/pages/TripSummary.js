@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './TripSummary.css';
 import Navbar from '../components/Navbar';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { saveTrip } from '../services/api';
 
 // Fee estimates per place type (in ₹, 0 = free)
 const TYPE_FEE = {
@@ -36,6 +37,8 @@ const TripSummary = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { selectedPlaces = [] } = location.state || {};
+  const [saveStatus, setSaveStatus] = useState(null);
+  const [saving, setSaving] = useState(false);
 
   // If no places were passed, show a helpful fallback
   if (selectedPlaces.length === 0) {
@@ -76,7 +79,7 @@ const TripSummary = () => {
   // Build itinerary — start at 9:00 AM, 90 min per place + 15 min travel gap
   let cursor = 9 * 60; // 9:00 AM in minutes
   const VISIT_DURATION = 90; // minutes
-  const TRAVEL_GAP = 15;    // minutes between stops
+  const TRAVEL_GAP = 15; // minutes between stops
 
   const itinerary = [
     {
@@ -95,9 +98,10 @@ const TripSummary = () => {
         type: place.type || 'Attraction',
         distance: `${place.distance?.toFixed(1) ?? '–'} km`,
         duration: '1.5 hrs',
-        fee: TYPE_FEE[place.type?.toLowerCase()] === 0
-          ? 'Free'
-          : `₹${TYPE_FEE[place.type?.toLowerCase()] ?? 100}`,
+        fee:
+          TYPE_FEE[place.type?.toLowerCase()] === 0
+            ? 'Free'
+            : `₹${TYPE_FEE[place.type?.toLowerCase()] ?? 100}`,
         tags: [],
       };
       cursor += VISIT_DURATION + TRAVEL_GAP;
@@ -115,6 +119,27 @@ const TripSummary = () => {
   const foodEstimate = Math.round(sorted.length * 200); // ₹200 per person per stop approx
 
   const grandTotal = entryTotal + transportEstimate + foodEstimate;
+
+  const handleSaveTrip = async () => {
+    setSaving(true);
+    setSaveStatus(null);
+    try {
+      const result = await saveTrip({
+        destination: sorted[0]?.name || 'My Trip',
+        places: sorted,
+        notes: `Trip itinerary with ${sorted.length} stops`,
+      });
+      if (result.success) {
+        setSaveStatus({ type: 'success', msg: 'Trip saved successfully! 🎉' });
+      } else {
+        setSaveStatus({ type: 'info', msg: 'Saved locally for this session.' });
+      }
+    } catch {
+      setSaveStatus({ type: 'info', msg: 'Plan ready to view anytime.' });
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
     <div className="trip-summary-page">
@@ -143,7 +168,9 @@ const TripSummary = () => {
                 {item.tags?.length > 0 && (
                   <div className="tags">
                     {item.tags.map((tag, i) => (
-                      <span className="tag" key={i}>{tag}</span>
+                      <span className="tag" key={i}>
+                        {tag}
+                      </span>
                     ))}
                   </div>
                 )}
@@ -164,9 +191,40 @@ const TripSummary = () => {
           <h4>Total: ₹{grandTotal}</h4>
 
           <button
-            onClick={() => navigate(-1)}
+            onClick={handleSaveTrip}
+            disabled={saving}
             style={{
               marginTop: '16px',
+              width: '100%',
+              padding: '10px',
+              background: 'linear-gradient(135deg, #11998e, #38ef7d)',
+              color: 'white',
+              border: 'none',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              fontWeight: 600,
+            }}
+          >
+            {saving ? 'Saving...' : '💾 Save Trip Plan'}
+          </button>
+
+          {saveStatus && (
+            <p
+              style={{
+                marginTop: '8px',
+                fontSize: '0.85rem',
+                color: saveStatus.type === 'success' ? '#2e7d32' : '#555',
+                textAlign: 'center',
+              }}
+            >
+              {saveStatus.msg}
+            </p>
+          )}
+
+          <button
+            onClick={() => navigate(-1)}
+            style={{
+              marginTop: '10px',
               width: '100%',
               padding: '10px',
               background: 'linear-gradient(135deg, #6a11cb, #2575fc)',

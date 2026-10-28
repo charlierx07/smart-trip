@@ -1,145 +1,166 @@
 # 🧳 Smart Trip
 
-> **AI-powered day-trip planner** — enter any location or use GPS, discover nearby attractions, build your itinerary, and get a smart budget breakdown. Built with React 19 and OpenStreetMap.
+> **AI-Powered Travel & Day-Trip Planner** — Enter any location or use GPS, discover nearby attractions, build an optimized itinerary, calculate smart budgets, and save trip plans. Organized into clean, scalable **Frontend** and **Backend** tiers.
+
+---
+
+## 🏗️ Architecture & Systematic File Structure
+
+The project is structured into a clean decoupled architecture with a dedicated **React Frontend** and an **Express Backend API**:
+
+```
+smart-trip/
+├── frontend/                        # React Client Application
+│   ├── public/                      # Static assets & HTML shell
+│   │   ├── index.html
+│   │   ├── manifest.json
+│   │   └── favicon.ico
+│   ├── src/
+│   │   ├── assets/                  # Images & static media
+│   │   │   └── bg.jpg
+│   │   ├── components/              # Reusable UI components
+│   │   │   ├── FilterBar.js / .css
+│   │   │   ├── HeroSection.js / .css
+│   │   │   ├── LocationCard.js / .css
+│   │   │   ├── LocationInput.js / .css
+│   │   │   ├── Navbar.js / .css
+│   │   │   ├── PlaceDetailsModal.js
+│   │   │   └── TripSidebar.js / .css
+│   │   ├── pages/                   # Application pages & routes
+│   │   │   ├── Home.js / .css            → /
+│   │   │   ├── TripPlanner.js            → /trip
+│   │   │   └── TripSummary.js / .css     → /trip-summary
+│   │   ├── services/                # API layer & network communication
+│   │   │   └── api.js               # Connects to backend with OSM fallback
+│   │   ├── utils/                   # Helper functions
+│   │   │   ├── distanceUtils.js     # Haversine distance calculations
+│   │   │   └── locationFetcher.js   # Places discovery helper
+│   │   ├── App.js                   # Route definitions
+│   │   ├── App.css                  # Global layouts & themes
+│   │   ├── index.js                 # Entry point
+│   │   └── index.css
+│   ├── .env.example                 # Frontend env configuration
+│   └── package.json                 # React 19 dependencies & scripts
+│
+├── backend/                         # Node.js & Express REST API
+│   ├── src/
+│   │   ├── controllers/             # Business logic & request handlers
+│   │   │   ├── placesController.js  # Geocoding & nearby places search
+│   │   │   └── tripsController.js   # Trip creation, budget & itinerary
+│   │   ├── routes/                  # Express route definitions
+│   │   │   ├── placesRoutes.js      # /api/places/*
+│   │   │   └── tripsRoutes.js       # /api/trips/*
+│   │   ├── services/                # External API integrations
+│   │   │   └── osmService.js        # OpenStreetMap & Overpass integration
+│   │   └── server.js                # Express app entry & CORS config
+│   ├── .env.example                 # Backend env configuration
+│   ├── README.md                    # Backend API documentation
+│   └── package.json                 # Express, CORS, Dotenv
+│
+├── .gitignore                       # Multi-tier gitignore (secrets, node_modules)
+├── README.md                        # Project documentation
+└── package.json                     # Monorepo scripts (run both frontend & backend)
+```
 
 ---
 
 ## ✨ Features
 
-- 📍 **Location Search** — type any city/place or use your GPS
-- 🗺️ **Nearby Places** — pulls real data from OpenStreetMap via the Overpass API (parks, museums, temples, historic sites, and more within 15 km)
-- 🔍 **Filter by Type & Date** — narrow results to exactly what you want
-- ➕ **Trip Planner Sidebar** — add/remove places and build your day
-- 📅 **Auto Itinerary** — generates optimised time slots sorted by distance
-- 💰 **Smart Budget** — calculates entry fees, food, and transport estimates
-- 🔐 **Google Login** *(coming soon)* — save and share trips via Firebase
+- 📍 **Smart Geocoding** — Search by city/landmark or tap GPS to detect coordinates.
+- 🗺️ **Attractions Discovery** — Discovers museums, historic monuments, theme parks, gardens, and temples within 15 km via OpenStreetMap.
+- 🎯 **Interactive Trip Builder** — Filter by category, inspect place details, and add stops to your live trip sidebar.
+- ⏱️ **Auto-Scheduled Itinerary** — Calculates optimal travel routes and generates timed itineraries with visit and transit buffers.
+- 💰 **Automated Budget Estimator** — Estimates category-based entry fees, transportation fares, and food allowances.
+- 💾 **Trip Persistence API** — Save finalized trip itineraries to the Express backend.
+- 🛡️ **Resilient Architecture** — Frontend automatically connects to backend, with built-in graceful fallback to direct OpenStreetMap if backend is offline.
 
 ---
 
-## 🗂️ Project Structure
+## 🚀 Quick Start Guide
 
-```
-smart-trip/
-├── public/
-│   ├── index.html          # App shell
-│   ├── manifest.json       # PWA metadata
-│   └── favicon.ico
-│
-├── src/
-│   ├── assets/
-│   │   └── bg.jpg          # Hero background image
-│   │
-│   ├── components/         # Reusable UI components
-│   │   ├── Navbar.js / .css
-│   │   ├── HeroSection.js / .css
-│   │   ├── FilterBar.js / .css
-│   │   ├── LocationCard.js / .css
-│   │   ├── LocationInput.js / .css
-│   │   ├── PlaceDetailsModal.js
-│   │   └── TripSidebar.js / .css
-│   │
-│   ├── pages/              # Route-level page components
-│   │   ├── Home.js / .css          → /
-│   │   ├── TripPlanner.js          → /trip
-│   │   └── TripSummary.js / .css   → /trip-summary
-│   │
-│   ├── utils/              # Pure helper functions
-│   │   ├── locationFetcher.js  # Overpass API integration
-│   │   └── distanceUtils.js    # Haversine distance formula
-│   │
-│   ├── App.js              # Route definitions
-│   ├── App.css             # Global styles & shared classes
-│   ├── index.js            # React root entry point
-│   └── index.css           # Base font & body styles
-│
-├── .env.example            # ✅ Safe env template (commit this)
-├── .gitignore
-├── package.json
-└── README.md
-```
+### Prerequisites
+- **Node.js** (v18.0.0 or later recommended)
+- **npm** (v9.0.0 or later)
 
 ---
 
-## 🚀 Getting Started
+### Running the Entire Project
 
-### 1. Clone the repository
-```bash
-git clone https://github.com/your-username/smart-trip.git
-cd smart-trip
-```
+#### Option 1: Run Frontend & Backend Independently
 
-### 2. Install dependencies
+**Terminal 1 — Backend (Port 5000):**
 ```bash
+cd backend
 npm install
+npm run dev
 ```
 
-### 3. Set up environment variables
+**Terminal 2 — Frontend (Port 3000):**
 ```bash
-cp .env.example .env.local
-# Then fill in your Firebase credentials in .env.local
-```
-
-### 4. Run the app
-```bash
+cd frontend
 npm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open **[http://localhost:3000](http://localhost:3000)** in your browser!
 
 ---
 
-## 🔑 Environment Variables
+#### Option 2: Run via Root Scripts
 
-Copy `.env.example` → `.env.local` and fill in your values.
+From the project root:
 
-| Variable | Description |
-|---|---|
-| `REACT_APP_FIREBASE_API_KEY` | Firebase project API key |
-| `REACT_APP_FIREBASE_AUTH_DOMAIN` | Firebase auth domain |
-| `REACT_APP_FIREBASE_PROJECT_ID` | Firebase project ID |
-| `REACT_APP_FIREBASE_STORAGE_BUCKET` | Firebase storage bucket |
-| `REACT_APP_FIREBASE_MESSAGING_SENDER_ID` | Firebase messaging sender ID |
-| `REACT_APP_FIREBASE_APP_ID` | Firebase app ID |
-| `REACT_APP_SEARCH_RADIUS` | Search radius in metres (default: `15000`) |
+```bash
+# Start backend server
+npm run start:backend
 
-> ⚠️ **Never commit `.env` or `.env.local` to GitHub.** They are already listed in `.gitignore`.
+# In another terminal, start frontend
+npm run start:frontend
 
----
-
-## 🛠️ Tech Stack
-
-| Layer | Technology |
-|---|---|
-| Frontend | React 19, React Router v7 |
-| Styling | Plain CSS (component-scoped) |
-| Location | Nominatim (OpenStreetMap geocoding) |
-| Places Data | Overpass API (OpenStreetMap) |
-| Auth *(planned)* | Firebase Authentication |
-| Icons | react-icons |
+# Build frontend for production
+npm run build
+```
 
 ---
 
-## 📦 Available Scripts
+## 📡 Backend API Reference
 
-| Command | Description |
-|---|---|
-| `npm start` | Run in development mode |
-| `npm run build` | Build for production |
-| `npm test` | Run tests |
-| `npm run eject` | Eject CRA config (irreversible) |
+Base URL: `http://localhost:5000`
+
+| Method | Endpoint | Query / Body | Description |
+|---|---|---|---|
+| `GET` | `/api/health` | — | Health check and server status |
+| `GET` | `/api/places/geocode` | `?q=<query>` | Geocode text to coordinates |
+| `GET` | `/api/places/nearby` | `?lat=<lat>&lon=<lon>&radius=<m>` | Fetch nearby attractions (15km) |
+| `GET` | `/api/trips` | — | Retrieve all saved trip plans |
+| `POST` | `/api/trips` | `{ destination, date, places, notes }` | Create and save a new trip plan |
+| `GET` | `/api/trips/:id` | — | Retrieve single trip by ID |
+| `DELETE` | `/api/trips/:id` | — | Delete a saved trip plan |
 
 ---
 
-## 🤝 Contributing
+## ⚙️ Environment Variables
 
-1. Fork the repo
-2. Create a feature branch: `git checkout -b feature/my-feature`
-3. Commit your changes: `git commit -m 'Add my feature'`
-4. Push to the branch: `git push origin feature/my-feature`
-5. Open a Pull Request
+### Frontend (`frontend/.env.example`)
+```env
+# Optional: Point to custom backend URL (defaults to http://localhost:5000/api)
+REACT_APP_API_URL=http://localhost:5000/api
+```
+
+### Backend (`backend/.env.example`)
+```env
+PORT=5000
+NODE_ENV=development
+CLIENT_URL=http://localhost:3000
+```
+
+---
+
+## 🔒 Security & Git Hygiene
+
+All sensitive configuration, environment variables, credentials, logs, and `node_modules` in both frontend and backend are comprehensively ignored by `.gitignore`.
 
 ---
 
 ## 📄 License
 
-MIT © Smart Trip
+MIT License. Open source and free to customize.

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './HeroSection.css';
 import backgroundImage from '../assets/bg.jpg';
+import { geocodeLocation } from '../services/api';
 
 const HeroSection = ({ onPlanTrip }) => {
   const [location, setLocation] = useState('');
@@ -14,25 +15,11 @@ const HeroSection = ({ onPlanTrip }) => {
 
     try {
       setLoading(true);
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}`
-      );
-      const data = await response.json();
-
-      if (data.length > 0) {
-        const { lat, lon, display_name } = data[0];
-        const locationObj = {
-          location: display_name,
-          lat: parseFloat(lat),
-          lon: parseFloat(lon),
-        };
-        onPlanTrip(locationObj);
-      } else {
-        alert('No location found. Try a different place.');
-      }
+      const locationObj = await geocodeLocation(location);
+      onPlanTrip(locationObj);
     } catch (error) {
       console.error('Geocoding failed:', error);
-      alert('Error finding location. Please check your internet connection.');
+      alert(error.message || 'Error finding location. Please check your internet connection.');
     } finally {
       setLoading(false);
     }
